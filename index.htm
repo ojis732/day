@@ -1,9 +1,332 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>My Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Namsemi!</title>
+    <style>
+        /* --- CSS STYLES --- */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;500&display=swap');
+
+        :root {
+            --primary-color: #ff8fa3;
+            --secondary-color: #fff0f3;
+            --text-color: #630d25;
+            --accent-color: #c9184a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            overflow: hidden; /* Prevents scrollbars during animation */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* The Envelope / Intro Screen */
+        #intro-screen {
+            position: absolute;
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 1s ease;
+        }
+
+        .gift-box {
+            font-size: 100px;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+        }
+
+        .click-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* The Main Content */
+        #main-content {
+            display: none; /* Hidden initially */
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            color: var(--accent-color);
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-top: -10px;
+        }
+
+        .photo-frame {
+            width: 250px;
+            height: 250px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin: 20px auto;
+            overflow: hidden;
+            border: 5px solid white;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .message-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+            margin-top: 20px;
+        }
+
+        .message-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #4a4a4a;
+        }
+
+        /* Floating Balloons Animation */
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 50px;
+            height: 70px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: floatUp 10s linear infinite;
+            z-index: 1;
+        }
+
+        .balloon::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 3.5rem; }
+            h2 { font-size: 1.5rem; }
+            .photo-frame { width: 200px; height: 200px; }
+        }
+    </style>
 </head>
 <body>
-<h1>Hello from GitHub Pages</h1>
+
+    <!-- Intro Screen (Envelope) -->
+    <div id="intro-screen" onclick="openGift()">
+        <div class="gift-box">🎁</div>
+        <div class="click-text">Click to Open, Namsemi!</div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <h1>Happy Birthday!</h1>
+        <h2>Namsemi</h2>
+        
+        <!-- PHOTO PLACEHOLDER: Replace the src URL with a photo of her -->
+        <div class="photo-frame">
+            <img src= namsemi.jpg>
+        </div>
+
+        <div class="message-card">
+            <p class="message-text">
+                 sorry for late wish hehe>>Wishing you a day filled with love, laughter, and all your favorite things. 
+                May this year bring you endless happiness and success. Grown up rey hawa 
+                Keep shining bright! ✨
+                <br><br>
+                <strong>Have a magical day!</strong>
+            </p>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Script for Logic -->
+    <script>
+        // --- 1. OPENING THE GIFT ---
+        function openGift() {
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-content');
+            
+            // Fade out intro
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.display = 'none';
+                
+                // Show main content
+                main.style.display = 'flex';
+                // Small delay to allow display:flex to apply before opacity transition
+                setTimeout(() => {
+                    main.style.opacity = '1';
+                    startConfetti();
+                    createBalloons();
+                }, 50);
+            }, 1000);
+        }
+
+        // --- 2. BALLOON GENERATOR ---
+        function createBalloons() {
+            const colors = ['#ff8fa3', '#c9184a', '#ffccd5', '#80ed99', '#57cc99'];
+            
+            setInterval(() => {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                
+                // Randomize position and color
+                balloon.style.left = Math.random() * 100 + 'vw';
+                balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Randomize animation duration
+                balloon.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                
+                document.body.appendChild(balloon);
+
+                // Remove balloon after animation to keep DOM clean
+                setTimeout(() => {
+                    balloon.remove();
+                }, 10000);
+            }, 500);
+        }
+
+        // --- 3. CONFETTI EFFECT (Simple Implementation) ---
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let confetti = [];
+        const confettiCount = 300;
+        const gravity = 0.5;
+        const terminalVelocity = 5;
+        const drag = 0.075;
+        const colors = [
+            { front: 'red', back: 'darkred' },
+            { front: 'green', back: 'darkgreen' },
+            { front: 'blue', back: 'darkblue' },
+            { front: 'yellow', back: 'darkyellow' },
+            { front: 'orange', back: 'darkorange' },
+            { front: 'pink', back: 'darkpink' },
+            { front: 'purple', back: 'darkpurple' },
+            { front: 'turquoise', back: 'darkturquoise' }
+        ];
+
+        resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        randomRange = (min, max) => Math.random() * (max - min) + min;
+
+        initConfetti = () => {
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    color: colors[Math.floor(randomRange(0, colors.length))],
+                    dimensions: { x: randomRange(10, 20), y: randomRange(10, 30) },
+                    position: { x: randomRange(0, canvas.width), y: canvas.height - 1 },
+                    rotation: randomRange(0, 2 * Math.PI),
+                    scale: { x: 1, y: 1 },
+                    velocity: { x: randomRange(-25, 25), y: randomRange(0, -50) }
+                });
+            }
+        };
+
+        renderConfetti = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            confetti.forEach((confetto, index) => {
+                let width = (confetto.dimensions.x * confetto.scale.x);
+                let height = (confetto.dimensions.y * confetto.scale.y);
+
+                ctx.translate(confetto.position.x, confetto.position.y);
+                ctx.rotate(confetto.rotation);
+
+                confetto.velocity.x -= confetto.velocity.x * drag;
+                confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+                confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
+
+                confetto.position.x += confetto.velocity.x;
+                confetto.position.y += confetto.velocity.y;
+
+                if (confetto.position.y >= canvas.height) confetti.splice(index, 1);
+
+                if (confetto.position.x > canvas.width) confetto.position.x = 0;
+                if (confetto.position.x < 0) confetto.position.x = canvas.width;
+
+                confetto.scale.y = Math.cos(confetto.position.y * 0.1);
+                ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+
+                ctx.fillRect(-width / 2, -height / 2, width, height);
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+            });
+
+            if (confetti.length > 0) window.requestAnimationFrame(renderConfetti);
+        };
+
+        function startConfetti() {
+            initConfetti();
+            renderConfetti();
+            window.addEventListener('resize', resizeCanvas);
+        }
+    </script>
+    
+    <audio autoplay loop> <source src="music.mp3" type="audio/mpeg"> </audio>
 </body>
 </html>
+
